@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 #********************************************************************
 # $Author: jgoerzen $
 # $Revision: 1.10 $
@@ -119,6 +118,7 @@ all: objects client gopherfilter
 #### Start of system configuration section. ####
 srcdir = .
 top_srcdir = .
+
 
 
 ${srcdir}/configure: configure.in

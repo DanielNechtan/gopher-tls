@@ -2813,16 +2813,19 @@ Load_Index_or_Dir(GopherObj *ZeGopher, char *Searchmungestr)
      DebugGSplusPrint(ZeGopher,"Load_Index_or_Dir");
      NewDir = GDnew(32);
 
-
+    if (GSgetPort(ZeGopher) == 343) {
+	Draw_Status(Gtxt("TLS Connecting...",77)); refresh();
+	ZeGopher->istls = TRUE;
+    }else{
      Draw_Status(Gtxt("Connecting...",77)); refresh();
-
+    }
 
      if ((sockfd = GSconnect(ZeGopher)) <0) {
-
 	  check_sock(sockfd, GSgetHost(ZeGopher), GSgetPort(ZeGopher));
 	  failed = 1;
      }
      else {
+
 	  if (GSgetType(ZeGopher) == A_DIRECTORY) {
 	       Draw_Status(Gtxt("Retrieving Directory...",133)); refresh();
 	       GStransmit(ZeGopher, sockfd, NULL, "$", NULL);

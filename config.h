@@ -1,4 +1,4 @@
-/* config.h.  Generated automatically by configure.  */
+/* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define to empty if the keyword does not work.  */
@@ -17,7 +17,7 @@
 /* #undef HAVE_DOPRNT */
 
 /* Define if your system has its own `getloadavg' function.  */
-#define HAVE_GETLOADAVG 1
+/* #undef HAVE_GETLOADAVG */
 
 /* Define if you have a working `mmap' system call.  */
 #define HAVE_MMAP 1
@@ -93,7 +93,7 @@
 #define HAVE_GETHOSTNAME 1
 
 /* Define if you have the getloadavg function.  */
-#define HAVE_GETLOADAVG 1
+/* #undef HAVE_GETLOADAVG */
 
 /* Define if you have the getpagesize function.  */
 #define HAVE_GETPAGESIZE 1

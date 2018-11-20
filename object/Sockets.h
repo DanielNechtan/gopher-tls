@@ -80,6 +80,7 @@
 #  include <netdb.h>
 #endif  /* not VMS */
 
+#include <tls.h>
 
 #ifndef MAXHOSTNAMELEN
 #  define MAXHOSTNAMELEN                (64)
@@ -91,6 +92,7 @@
 void SOCKlinger(int sockfd, boolean onoff);
 int  SOCKbind_to_port(int port);
 int  SOCKconnect(char *hostname, int port);
+struct tls *SOCKtlsconn(int sockfd, char *hostname);
 int  SOCKlisten(struct sockaddr_in * We);
 int  SOCKaccept(int s, struct sockaddr_in we);
 void SOCKnetnames(int  sockfd, char *host_name, char *ipnum);

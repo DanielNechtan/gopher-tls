@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 # Swedish support added by Johan Svensson <Johan@ecsdg.lu.se>,
 # EkonomiCentrum Software Development Group, Lund University, Sweden.
 # 1994-06-08

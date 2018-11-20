@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 #********************************************************************
 # $Author: jgoerzen $
 # $Revision: 1.3 $
@@ -63,6 +62,7 @@
 srcdir = .
 top_srcdir = ..
 
+
 include ../Makefile.config
 
 OBJS	= gophfilt.o
@@ -80,7 +80,7 @@ all:	$(TARGET)
 	(cd ..; $(MAKE) $(MFLAGS) objects)
 
 $(TARGET) : $(OBJS) ../object/libgopher.a
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) ../object/libgopher.a  -ltermcap -lcurses -lm  
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) ../object/libgopher.a  -lcrypto -lssl -ltls -ltermcap -lcurses -lm  
 
 install : all
 	-mv $(CLIENTDIR)/$(TARGET) $(CLIENTDIR)/$(TARGET).old

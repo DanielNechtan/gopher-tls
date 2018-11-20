@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 include ../Makefile.config
 
 TARGET = gopher.1 \

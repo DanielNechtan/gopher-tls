@@ -1,6 +1,6 @@
-# Generated automatically from Makefile.in by configure.
 srcdir = .
 top_srcdir = ..
+
 
 include ../Makefile.config
 

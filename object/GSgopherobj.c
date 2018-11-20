@@ -367,7 +367,7 @@
 #include "Debug.h"
 #include "fileio.h"
 #include <time.h>
-
+#include <tls.h>
 #ifdef pyr
 unsigned long errno;
 #endif
@@ -390,8 +390,9 @@ GSnew()
      temp->Localview = STRnew();
      temp->gplus     = NULL;
      temp->isask     = FALSE;
+     temp->istls     = FALSE;
      temp->url       = NULL;
-
+     temp->ctx       = NULL;
      GSinit(temp);
 
      return(temp);
@@ -1503,16 +1504,15 @@ GScmp(GopherObj *gs1, GopherObj *gs2)
 int
 GSconnect(GopherObj *gs)
 {
-     int sockfd; 
+     int sockfd;
 
      Debug("GSconnect: Host=%s",GSgetHost(gs));
      Debug("Port=%d\r\n",GSgetPort(gs));
-     
      sockfd = SOCKconnect(GSgetHost(gs), GSgetPort(gs));
-     
+     if (gs->istls)
+	gs->ctx = SOCKtlscon(sockfd, GSgetHost(gs));
      return(sockfd);
 }
-
 
 /*
  * GStransmit sends the request from the client to the server
@@ -1527,45 +1527,106 @@ GStransmit(GopherObj *gs, int sockfd, char *search, char *command, char *view)
 {
      char *cp;
      char **ask = GSgetAskdata(gs);
+     char wbuf[1024];
      int i;
 
+     if(gs->istls)
+	{
+
+ 	char wbuf[1024];
+	ssize_t w = 0;
+	ssize_t wr = 0;
+	snprintf(wbuf, 1024, (char)GSgetPath(gs));
+	w = tls_write(gs->ctx, wbuf + wr, strlen(wbuf) - wr);
+
+/*	tls_write(gs->ctx, GSgetPath(gs), strlen(GSgetPath(gs))); */
+     }else{
      writestring(sockfd, GSgetPath(gs));
+     }
      if (search != NULL) {
+	if(gs->istls){
+		snprintf(wbuf, sizeof(wbuf), "\t");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		tls_write(gs->ctx, search, strlen(search));
+		memset(wbuf, 0, sizeof(wbuf));
+	}else{
 	  writestring(sockfd, "\t");
 	  writestring(sockfd, search);
+	}
      }
 
      /** Only send if gplus **/
      if  (!GSisGplus(gs)) {
+	if(gs->istls){
+		snprintf(wbuf, sizeof(wbuf), "\r\n");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		memset(wbuf, 0, sizeof(wbuf));
+	} else {
 	  writestring(sockfd, "\r\n");
+	}
 	  return;
      }
 
      if (command != NULL) {
+	if(gs->istls){
+		snprintf(wbuf, sizeof(wbuf), "\t");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		memset(wbuf, 0, sizeof(wbuf));
+		tls_write(gs->ctx, command, strlen(command));
+	} else {
 	  writestring(sockfd, "\t");
 	  writestring(sockfd, command);
+	}
      }	  
 
      if (view != NULL) {
+	if(gs->istls){
+		tls_write(gs->ctx, view, strlen(view));
+	} else {
 	  writestring(sockfd, view);
+	}
      }
-     if (ask == NULL) 
+     if (ask == NULL)
+	if(gs->istls){
+		snprintf(wbuf, sizeof(wbuf), "\r\n");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		memset(wbuf, 0, sizeof(wbuf));
+	} else {
 	  writestring(sockfd, "\r\n");
+	}
      else {
+	if(gs->istls){
+		snprintf(wbuf, sizeof(wbuf), "\t1\r\n");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		memset(wbuf, 0, sizeof(wbuf));
+		GSsendHeaderTLS(gs->ctx, -1);
+	} else {
 	  writestring(sockfd, "\t1\r\n");
 
 	  GSsendHeader(sockfd, -1);
-	  
+	  }
 	  for (i=0; ;i++) {
 	       cp = ask[i];
 
 	       if (cp == NULL)
 		    break;
-
+	if(gs->istls){
+		tls_write(gs->ctx, cp, strlen(cp));
+		snprintf(wbuf, sizeof(wbuf), "\r\n");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		memset(wbuf, 0, sizeof(wbuf));
+	} else {
 	       writestring(sockfd, cp);
 	       writestring(sockfd, "\r\n");
+	}
 	  }
+	if(gs->istls){
+		snprintf(wbuf, sizeof(wbuf), "\r\n");
+		tls_write(gs->ctx, wbuf, strlen(wbuf));
+		memset(wbuf, 0, sizeof(wbuf));
+	} else {
 	  writestring(sockfd, ".\r\n");
+	}
      }
 }
 
@@ -1584,6 +1645,13 @@ GSsendHeader(int sockfd, long size)
      writestring(sockfd, sizestr);
 }
 
+void
+GSsendHeaderTLS(struct tls *ctx, long size)
+{
+	char sizestr[64];
+	snprintf(sizestr, sizeof(sizestr), "+%ld\r\n", size);
+	tls_write(ctx, sizestr, strlen(sizestr));
+}
 
 /** GSsendErrorHeader sends an error message header/message to the client **/
 void
@@ -1592,7 +1660,11 @@ GSsendErrorHeader(GopherObj *gs, int sockfd, int errortype, char *errormsg)
      char tmpstr[512];
 
      snprintf(tmpstr, sizeof(tmpstr), "-%d %s\r\n", errortype, errormsg);
+     if(gs->istls){
+	 tls_write(gs->ctx, tmpstr, strlen(tmpstr));
+     } else {
      writestring(sockfd, tmpstr);
+    }
 }
 
 
@@ -1617,8 +1689,13 @@ GSrecvHeader(GopherObj *gs, int sockfd)
 
      Debugmsg("GSrecvHeader\n");
      if (GSisGplus(gs)) {
+	if(gs->istls){
+	  if (tls_read(gs->ctx, headerline, sizeof(headerline))<=0)
+		return(0);
+	} else {
 	  if (readline(sockfd, headerline, sizeof(headerline))<=0)
 		  return(0);
+	}
 	  ZapCRLF(headerline);
 	  if (*headerline == '+') {
 	       if (*(headerline+1) == '-')

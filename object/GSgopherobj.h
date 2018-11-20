@@ -208,8 +208,11 @@ struct g_struct
 
      boolean isgplus;       /* Item can be queried gopher+ style */
      boolean isask;         /* Item contains an ASK block */
+     boolean istls;         /* Item is TLS-enabled */
+     struct tls *ctx;       /* TLS context */
      GplusObj *gplus;       /* Gopher + attributes */
      Url      *url;         /* The Unix^H^H^Hniversal Resource Locator */
+
 };
 
 
@@ -311,6 +314,7 @@ int       GSfromURL(GopherObj *gs, char *urltxt, char *host, int port, int donef
 int  GSconnect(GopherObj*);
 void GStransmit(GopherObj *gs, int sockfd, char *search, char *, char *);
 void GSsendHeader(int, long);
+void GSsendHeaderTLS(struct tls *, long);
 void GSsendErrorHeader(GopherObj *gs, int sockfd, int errortype, char *);
 int  GSrecvHeader(GopherObj *gs, int sockfd);
 void GStransmit();

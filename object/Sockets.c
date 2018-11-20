@@ -106,8 +106,11 @@
 
 #include "Sockets.h"
 #include "Malloc.h"
-
-
+#ifdef __OpenBSD__
+#include <err.h>
+#include <errno.h>
+#include <tls.h>
+#endif
 /*
  * This turns the linger output off
  */
@@ -382,7 +385,35 @@ SOCKconnect(char *hostname, int port)
 
 }
 
+struct tls
+*SOCKtlscon(int sockfd, char *hostname)
+{
+	int i;
+	struct tls_config *tls_cfg = NULL;
+	struct tls *tls_ctx = NULL;
 
+	if (tls_init() == -1)
+		Debugmsg("tls_init() failed");
+	if ((tls_cfg = tls_config_new()) == NULL)
+		Debugmsg("tls_cfg() failed");
+	if (tls_config_set_ca_file(tls_cfg, "/etc/ssl/cert.pem") == -1)
+		Debugmsg("tls_config_set_ca_file() failed");
+	if ((tls_ctx = tls_client()) == NULL)
+		Debugmsg("tls client creation failed");
+	tls_config_insecure_noverifyname(tls_cfg);
+	tls_config_insecure_noverifycert(tls_cfg);
+	if(tls_configure(tls_ctx, tls_cfg) == -1)
+			Debug("tls configuration failed (%s)",
+		   		 tls_error(tls_ctx));
+	if (tls_connect_socket(tls_ctx, sockfd, hostname) == -1)
+			Debug("tls connection failed (%s)",
+		   		 tls_error(tls_ctx));
+	do {
+		i = tls_handshake(tls_ctx);
+	} while (i == TLS_WANT_POLLIN || i == TLS_WANT_POLLOUT);
+
+	return tls_ctx;
+}
 
 
 /*

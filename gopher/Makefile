@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 #********************************************************************
 # $Author: jgoerzen $
 # $Revision: 1.5 $
@@ -126,6 +125,7 @@ include ../Makefile.config
 srcdir = .
 top_srcdir = ..
 
+
 OBJS	= manager.o gopher.o globals.o ourutils.o cso.o \
 	subprocs.o html2.o CURcurses.o gopherrc.o \
         download.o pager.o form.o upload.o
@@ -149,7 +149,7 @@ globals.o : $(srcdir)/globals.h $(srcdir)/version.h
 	(cd ..; $(MAKE) $(MFLAGS) objects)
 
 $(TARGET) : $(OBJS) ../object/libgopher.a
-	$(CC) $(LDFLAGS) -o $@ $(OBJS)  ../object/libgopher.a  -lcurses -ltermcap  -ltermcap -lcurses -lm 
+	$(CC) $(LDFLAGS) -o $@ $(OBJS)  ../object/libgopher.a  -lcurses -ltermcap -ltls -lssl -lcrypto  -lcrypto -lssl -ltls -ltermcap -lcurses -lm 
 
 install : all
 	-mv $(CLIENTDIR)/$(TARGET) $(CLIENTDIR)/$(TARGET).old
