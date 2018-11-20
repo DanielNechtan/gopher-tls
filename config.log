@@ -1,0 +1,106 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:556: checking for gcc
+configure:669: checking whether the C compiler (gcc  ) works
+configure:685: gcc -o conftest    conftest.c  1>&5
+configure:711: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:716: checking whether we are using GNU C
+configure:744: checking whether gcc accepts -g
+configure:806: checking for a BSD compatible install
+configure:859: checking whether ln -s works
+configure:882: checking for ranlib
+configure:910: checking whether make sets ${MAKE}
+configure:938: checking for main in -lm
+configure:1118: checking for connect
+configure:1146: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1416: checking for gethostname
+configure:1483: checking for re_comp in -lcompat
+configure:1525: checking for main in -lmalloc
+configure:1570: checking for main in -lcurses
+configure:1606: checking for main in -ltermcap
+configure:1647: checking for dirent.h that defines DIR
+configure:1685: checking for opendir in -ldir
+configure:1768: checking how to run the C preprocessor
+configure:1848: checking for ANSI C header files
+configure:1952: checking for sys/wait.h that is POSIX.1 compatible
+configure:1997: checking for strings.h
+configure:1997: checking for string.h
+configure:1997: checking for sys/param.h
+configure:1997: checking for term.h
+configure:1997: checking for re_comp.h
+configure:1997: checking for regex.h
+configure:1997: checking for crypt.h
+configure:1997: checking for fcntl.h
+configure:1997: checking for time.h
+configure:1997: checking for ctype.h
+configure:1997: checking for limits.h
+configure:1997: checking for locale.h
+configure:1997: checking for sys/types.h
+configure:1997: checking for sys/stat.h
+configure:1997: checking for sys/file.h
+configure:1997: checking for sys/ioctl.h
+configure:1997: checking for sys/time.h
+configure:1997: checking for syslog.h
+configure:1997: checking for unistd.h
+configure:1997: checking for malloc.h
+configure:1997: checking for stdlib.h
+configure:1997: checking for libgen.h
+configure:1997: checking for regexp.h
+configure:2035: checking for working const
+configure:2110: checking for uid_t in sys/types.h
+configure:2144: checking for pid_t
+configure:2177: checking for size_t
+configure:2210: checking whether time.h and sys/time.h may both be included
+configure:2245: checking whether struct tm is in sys/time.h or time.h
+configure:2281: checking whether gcc needs -traditional
+configure:2330: checking for unistd.h
+configure:2369: checking for getpagesize
+configure:2422: checking for working mmap
+configure:2593: checking return type of signal handlers
+configure:2634: checking for working strcoll
+configure:2676: checking for vfork.h
+configure:2711: checking for working vfork
+configure:2885: checking for vprintf
+configure:2993: checking for getloadavg
+configure:3219: checking for getloadavg
+configure:3574: checking whether getloadavg requires setgid
+configure:3632: checking for main in -lcurses
+configure:3675: checking for main in -ltermcap
+configure:3720: checking for bzero
+configure:3720: checking for gethostname
+configure:3720: checking for fgetpwent
+configure:3720: checking for get_current_dir_name
+configure:3720: checking for getcwd
+configure:3720: checking for getwd
+configure:3720: checking for madvise
+configure:3720: checking for mkdir
+configure:3720: checking for mkstemp
+configure:3720: checking for mktime
+configure:3720: checking for putenv
+configure:3720: checking for re_comp
+configure:3720: checking for select
+configure:3720: checking for seteuid
+configure:3720: checking for setsid
+configure:3720: checking for socket
+configure:3720: checking for strcasecmp
+configure:3720: checking for strcspn
+configure:3720: checking for strdup
+configure:3720: checking for strerror
+configure:3720: checking for strftime
+configure:3720: checking for strspn
+configure:3720: checking for strstr
+configure:3720: checking for strtol
+configure:3720: checking for sysconf
+configure:3720: checking for tempnam
+configure:3720: checking for tzset
+configure:3720: checking for wait3
+configure:3720: checking for waitpid
+configure:3720: checking for strcasestr
+configure:3720: checking for regcomp
+configure:3720: checking for regfree
+configure:3720: checking for wattron
+configure:3720: checking for wattroff
+configure:3720: checking for wstandout
+configure:3720: checking for wstandend
+configure:3781: gcc -o conftest -g -O2   conftest.c -ltermcap -lcurses -lm  1>&5
